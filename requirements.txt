@@ -1,0 +1,4 @@
+bleak>=0.21.0
+PyQt5>=5.15.0
+PyQt5-sip>=12.13.0
+pydantic>=2.0.0
