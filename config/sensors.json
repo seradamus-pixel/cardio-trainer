@@ -1,0 +1,23 @@
+{
+  "sensors": {
+    "heart_rate": {
+      "type": "polar_h10",
+      "mac_address": "",
+      "name": "Polar Heart Rate Monitor"
+    },
+    "power_meter": {
+      "type": "stages",
+      "mac_address": "",
+      "name": "Power Meter"
+    },
+    "trainer": {
+      "type": "elite_muin_plus",
+      "mac_address": "",
+      "name": "Elite Real Turbo Muin+"
+    }
+  },
+  "calibration": {
+    "power_offset": 0.0,
+    "last_calibrated": ""
+  }
+}
