@@ -671,7 +671,7 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------
 
     def _setup_ui(self) -> None:
-        self.setWindowTitle("Cardio Trainer")
+        self.setWindowTitle("trainero2 – Konfiguracja czujników")
         self.setMinimumSize(960, 640)
         self.resize(1200, 700)
 

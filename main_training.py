@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-main.py
+main_training.py
 
-Entry point for trainero2 – device setup interface (Part 1).
+Entry point for trainero2 – live training session interface (Part 2).
 
 Usage
 -----
-    python main.py [--log-level {DEBUG,INFO,WARNING,ERROR}]
+    python main_training.py [--log-level {DEBUG,INFO,WARNING,ERROR}]
 
-Scans for nearby BLE sensors (Heart Rate Monitor, Power Meter, Smart Trainer),
-lets the user select and connect to each, and saves the chosen MAC addresses to
-``config/sensors.json`` for use by the training session.
+The application reads sensor MAC addresses and athlete settings from
+``config/sensors.json``, automatically connects to the configured BLE
+devices, and displays a large real-time training interface.
 
-Run ``python main_training.py`` next to start the live training session.
+Run ``python main.py`` first to scan for and configure sensor devices.
 """
 
 import argparse
@@ -21,14 +21,13 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from config.config_manager import ConfigManager
-from modules.ui.main_window import MainWindow
+from modules.trainer_ui import TrainerUI
 from modules.ui.styles import APP_STYLESHEET
 
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="trainero2 – device setup interface"
+        description="trainero2 – live training session interface"
     )
     parser.add_argument(
         "--log-level",
@@ -53,8 +52,7 @@ def main() -> None:
     app.setOrganizationName("seradamus-pixel")
     app.setStyleSheet(APP_STYLESHEET)
 
-    config = ConfigManager()
-    window = MainWindow(config_manager=config)
+    window = TrainerUI()
     window.show()
 
     sys.exit(app.exec_())

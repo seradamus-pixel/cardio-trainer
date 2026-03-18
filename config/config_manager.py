@@ -38,6 +38,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "power_offset": 0.0,
         "last_calibrated": "",
     },
+    "athlete": {
+        "ftp": 250,
+        "max_hr": 185,
+        "weight_kg": 75.0,
+    },
 }
 
 
@@ -150,6 +155,46 @@ class ConfigManager:
             Timestamp string, or ``""`` when never calibrated.
         """
         return self.config.get("calibration", {}).get("last_calibrated", "")
+
+    # ------------------------------------------------------------------
+    # Athlete settings
+    # ------------------------------------------------------------------
+
+    def get_ftp(self) -> int:
+        """Return the athlete's functional threshold power (watts).
+
+        Returns:
+            FTP in watts; defaults to ``250``.
+        """
+        return int(self.config.get("athlete", {}).get("ftp", 250))
+
+    def set_ftp(self, ftp: int) -> None:
+        """Persist the athlete's FTP to disk.
+
+        Args:
+            ftp: Functional threshold power in watts.
+        """
+        if "athlete" not in self.config:
+            self.config["athlete"] = {}
+        self.config["athlete"]["ftp"] = max(1, int(ftp))
+        self._save()
+        logger.info("Saved FTP: %d W", ftp)
+
+    def get_max_hr(self) -> int:
+        """Return the athlete's maximum heart rate (BPM).
+
+        Returns:
+            Max HR in BPM; defaults to ``185``.
+        """
+        return int(self.config.get("athlete", {}).get("max_hr", 185))
+
+    def get_weight_kg(self) -> float:
+        """Return the athlete's body weight in kilograms.
+
+        Returns:
+            Weight in kg; defaults to ``75.0``.
+        """
+        return float(self.config.get("athlete", {}).get("weight_kg", 75.0))
 
     def reload(self) -> None:
         """Re-read the configuration from disk."""
