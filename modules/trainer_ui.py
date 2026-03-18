@@ -98,7 +98,7 @@ class TrainerUI(QMainWindow):
         self._wire_signals()
 
         # Window appearance
-        self.setWindowTitle("Cardio Trainer – Sesja treningowa")
+        self.setWindowTitle("trainero2 – Sesja treningowa")
         self.resize(1280, 800)
         self.setMinimumSize(900, 600)
 

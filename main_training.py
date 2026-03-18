@@ -2,7 +2,7 @@
 """
 main_training.py
 
-Entry point for the Cardio Trainer – live training session interface.
+Entry point for trainero2 – live training session interface (Part 2).
 
 Usage
 -----
@@ -27,7 +27,7 @@ from modules.ui.styles import APP_STYLESHEET
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Cardio Trainer – live training session interface"
+        description="trainero2 – live training session interface"
     )
     parser.add_argument(
         "--log-level",
@@ -48,7 +48,7 @@ def main() -> None:
     )
 
     app = QApplication(sys.argv)
-    app.setApplicationName("Cardio Trainer")
+    app.setApplicationName("trainero2")
     app.setOrganizationName("seradamus-pixel")
     app.setStyleSheet(APP_STYLESHEET)
 

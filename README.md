@@ -1,4 +1,4 @@
-# Cardio Trainer
+# trainero2
 
 A PC-based cycling training application for managing and displaying real-time data from BLE fitness sensors.
 
@@ -24,7 +24,7 @@ A PC-based cycling training application for managing and displaying real-time da
 ## Project Structure
 
 ```
-cardio-trainer/
+trainero2/
 ├── modules/
 │   ├── connection/
 │   │   ├── ble_scanner.py       # BLE device scanning
@@ -63,7 +63,7 @@ cardio-trainer/
 ```bash
 # Clone the repository
 git clone https://github.com/seradamus-pixel/cardio-trainer.git
-cd cardio-trainer
+cd trainero2
 
 # Create and activate a virtual environment (recommended)
 python -m venv .venv
