@@ -1,45 +1,43 @@
 # Cardio Trainer
 
-A PC-based cycling training application for managing and displaying real-time data from BLE fitness sensors.
+A PC-based Bluetooth LE scanner that discovers nearby fitness devices, classifies
+them as **Heart Rate Monitors** (pulsometry) or **Trainers** (trenażery), and lets
+you manage a saved-device list together with your LTHR and FTP training thresholds.
 
 ## Features
 
-- **Heart Rate Monitoring** – live BPM display with zone classification (Polar H10 and other HR sensors)
-- **Power Meter** – real-time power, W/kg, normalised power, and zone display (Stages, Quarq, etc.)
-- **Smart Trainer Control** – ERG mode (target power) and simulation mode (road gradient) via FTMS protocol (Elite Real Turbo Muin+)
-- **BLE Device Discovery** – automatic scanning with RSSI and battery level indicators
-- **Calibration** – zero-offset calibration for strain-gauge power meters
-- **Session Statistics** – TSS, IF, NP, and calorie estimation updated every second
-- **Persistent Configuration** – last-used device MAC addresses saved across sessions
+- **BLE Device Discovery** – scans for nearby Bluetooth LE devices and shows name,
+  MAC address, RSSI, and automatically detected type.
+- **Device Classification** – identifies Heart Rate Monitors (BLE HRS 0x180D) and
+  Trainers / Power Meters (BLE CPS 0x1818 / FTMS 0x1826) from service UUIDs.
+- **Saved Device List** – add or remove devices stored in `config/devices.json`.
+- **Training Thresholds** – store and update LTHR (Lactate Threshold Heart Rate) and
+  FTP (Functional Threshold Power) in the same config file.
+- **Cross-Platform** – runs on Windows, macOS, and Linux wherever Python 3.11+ and
+  a Bluetooth 4.0+ adapter are available.
+- **Async & Modular** – built with `asyncio` and `bleak`; separate modules for
+  scanning, device management, and the UI.
 
 ## Project Structure
 
 ```
 cardio-trainer/
 ├── modules/
-│   ├── connection/
-│   │   ├── ble_scanner.py       # BLE device scanning
-│   │   └── device_manager.py    # Device connection management
-│   ├── logic/
-│   │   ├── calculations.py      # Calculations and conversions
-│   │   └── calibration.py       # Power meter calibration
-│   ├── ui/
-│   │   ├── main_window.py       # Main PyQt5 window (3-panel layout)
-│   │   ├── widgets.py           # Custom widgets
-│   │   └── styles.py            # UI styling
-│   └── trainer/
-│       └── control.py           # Elite Muin+ FTMS control
+│   ├── ble_scanner.py      # BLE scanning logic (asyncio + bleak)
+│   ├── device_manager.py   # Saved devices & config management
+│   └── ui.py               # Interactive text UI
 ├── config/
-│   ├── sensors.json             # Sensor configuration (auto-generated)
-│   └── config_manager.py        # Configuration file handling
-├── main.py                      # Application entry point
-└── requirements.txt
+│   └── devices.json        # Persistent configuration (auto-created)
+├── main.py                 # Application entry point
+├── requirements.txt
+└── README.md
 ```
 
 ## Requirements
 
 - Python 3.11+
 - A Bluetooth 4.0+ adapter
+- `bleak` ≥ 0.21.0
 
 ## Installation
 
@@ -67,58 +65,68 @@ Optional flags:
 
 | Flag | Values | Default | Description |
 |------|--------|---------|-------------|
-| `--log-level` | DEBUG, INFO, WARNING, ERROR | INFO | Logging verbosity |
+| `--log-level` | DEBUG, INFO, WARNING, ERROR | WARNING | Logging verbosity |
+| `--scan-duration` | any positive number | 10 | BLE scan duration in seconds |
 
 Example:
 
 ```bash
-python main.py --log-level DEBUG
+python main.py --log-level INFO --scan-duration 15
 ```
 
 ## Usage
 
-1. **Heart Rate Sensor (left panel)**
-   - Click **Scan for Devices** to discover nearby BLE HR monitors.
-   - Select your Polar H10 (or compatible sensor) from the drop-down.
-   - The live BPM readout and heart rate zone will update automatically.
-   - Click **Continue →** once connected to proceed.
+The application presents a numbered text menu:
 
-2. **Power Meter (centre panel)**
-   - Click **Scan for Devices** and select your power meter.
-   - Start pedalling – the power display will activate automatically.
-   - Use **Calibrate Zero Offset** to perform a static zero calibration.
+```
+============================================================
+   CARDIO TRAINER – Skaner BLE
+============================================================
 
-3. **Smart Trainer (right panel)**
-   - Scan and select your Elite Real Turbo Muin+ (or other FTMS trainer).
-   - Use the **ERG Mode** slider to set a target power and click **Apply**.
-   - Use the **Simulation Mode** slider to set a virtual road gradient.
+  Opcje:
+  [1] Skanuj urządzenia BLE
+  [2] Dodaj urządzenie do listy zapisanych
+  [3] Usuń urządzenie z listy zapisanych
+  [4] Pokaż zapisane urządzenia
+  [5] Ustaw LTHR
+  [6] Ustaw FTP
+  [7] Pokaż konfigurację
+  [0] Wyjście
+```
 
-## Supported Devices
+1. **Scan** (option 1) – discovers nearby BLE devices and lists them with RSSI and type.
+2. **Add** (option 2) – pick a number from the scanned list to save the device.
+3. **Remove** (option 3) – pick a number from the saved list to delete the entry.
+4. **LTHR / FTP** (options 5 & 6) – enter your threshold values; they are persisted immediately.
 
-| Role | Protocol | Examples |
-|------|----------|---------|
-| Heart Rate | BLE HRS (0x180D) | Polar H10, Garmin HRM-Pro |
-| Power Meter | BLE CPS (0x1818) | Stages, Quarq, Garmin Vector |
-| Smart Trainer | FTMS (0x1826) | Elite Real Turbo Muin+, Wahoo KICKR |
+## Configuration File
 
-## Configuration
-
-Sensor MAC addresses are stored in `config/sensors.json` and loaded automatically on next launch.
+`config/devices.json` is created automatically on first run:
 
 ```json
 {
-  "sensors": {
-    "heart_rate": { "mac_address": "AA:BB:CC:DD:EE:FF", ... },
-    "power_meter": { "mac_address": "...", ... },
-    "trainer":     { "mac_address": "...", ... }
-  },
-  "calibration": {
-    "power_offset": 0.0,
-    "last_calibrated": "2025-01-01T10:00:00"
-  }
+  "devices": [
+    {
+      "name": "Polar H10",
+      "address": "AA:BB:CC:DD:EE:FF",
+      "type": "heart_rate_monitor"
+    }
+  ],
+  "lthr": 155,
+  "ftp": 250,
+  "last_updated": "2025-01-01T10:00:00.000000"
 }
 ```
+
+## Supported Device Types
+
+| Type identifier | BLE Service | Examples |
+|-----------------|-------------|---------|
+| `heart_rate_monitor` | HRS 0x180D | Polar H10, Garmin HRM-Pro |
+| `trainer` | CPS 0x1818 / FTMS 0x1826 | Wahoo KICKR, Elite Muin+, Stages |
+| `unknown` | — | Any other BLE device |
 
 ## License
 
 MIT
+
