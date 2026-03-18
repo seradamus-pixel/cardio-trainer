@@ -1,0 +1,24 @@
+{
+  "start_time": "2026-03-18T07:30:58.407726",
+  "end_time": "2026-03-18T07:30:58.407767",
+  "duration_seconds": 0.0,
+  "ftp": 250,
+  "heart_rate": {
+    "average": 142,
+    "max": 144,
+    "min": 140,
+    "drift_bpm_per_min": 0.0
+  },
+  "power": {
+    "average": 230,
+    "max": 240,
+    "min": 220,
+    "avg_pct_ftp": 92.0
+  },
+  "cadence": {
+    "average": 90.0,
+    "max": 92.0
+  },
+  "energy_kj": 0.0,
+  "samples_count": 5
+}
